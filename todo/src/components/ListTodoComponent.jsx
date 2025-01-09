@@ -3,23 +3,22 @@ import {
   completeTodo,
   deleteTodo,
   getAllTodos,
-  incompleteTodo,
+  inCompleteTodo,
 } from "../services/TodoService";
 import { useNavigate } from "react-router-dom";
 
 const ListTodoComponent = () => {
+  const [todos, setTodos] = useState([]);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     listTodos();
   }, []);
 
-  const [todos, setTodos] = useState([]);
-
-  const nagivate = useNavigate();
-
   function listTodos() {
     getAllTodos()
       .then((response) => {
-        console.log(response.data);
         setTodos(response.data);
       })
       .catch((error) => {
@@ -28,12 +27,12 @@ const ListTodoComponent = () => {
   }
 
   function addNewTodo() {
-    nagivate("/add-todo");
+    navigate("/add-todo");
   }
 
   function updateTodo(id) {
     console.log(id);
-    nagivate(`/update-todo/${id}`);
+    navigate(`/update-todo/${id}`);
   }
 
   function removeTodo(id) {
@@ -57,7 +56,7 @@ const ListTodoComponent = () => {
   }
 
   function markInCompleteTodo(id) {
-    incompleteTodo(id)
+    inCompleteTodo(id)
       .then((response) => {
         listTodos();
       })
@@ -87,7 +86,7 @@ const ListTodoComponent = () => {
               <tr key={todo.id}>
                 <td>{todo.title}</td>
                 <td>{todo.description}</td>
-                <td>{todo.completed ? "Yes" : "No"}</td>
+                <td>{todo.completed ? "YES" : "NO"}</td>
                 <td>
                   <button
                     className="btn btn-info"
