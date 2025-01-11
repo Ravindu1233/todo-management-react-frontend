@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { getTodo, saveTodo, updateTodo } from "../services/TodoService";
 import { useNavigate, useParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TodoComponent = () => {
   const [title, setTitle] = useState("");
@@ -8,59 +10,62 @@ const TodoComponent = () => {
   const [completed, setCompleted] = useState(false);
   const { id } = useParams();
 
-  const nagivate = useNavigate();
+  const navigate = useNavigate();
 
   function saveOrUpdateTodo(e) {
     e.preventDefault();
 
     const todo = { title, description, completed };
-    console.log(todo);
 
     if (id) {
       updateTodo(id, todo)
-        .then((response) => {
-          nagivate("/todos");
+        .then(() => {
+          toast.success("Todo updated successfully!");
+          navigate("/todos");
         })
         .catch((error) => {
           console.error(error);
+          toast.error("Failed to update the Todo.");
         });
     } else {
       saveTodo(todo)
-        .then((response) => {
-          console.log(response.data);
-          nagivate("/todos");
+        .then(() => {
+          toast.success("Todo added successfully!");
+          navigate("/todos");
         })
         .catch((error) => {
           console.error(error);
+          toast.error("Failed to add the Todo.");
         });
     }
   }
 
   function pageTitle() {
-    if (id) {
-      return <h2 className="text-center">Update Todo</h2>;
-    } else {
-      return <h2 className="text-center">Add Todo</h2>;
-    }
+    return id ? (
+      <h2 className="text-center">Update Todo</h2>
+    ) : (
+      <h2 className="text-center">Add Todo</h2>
+    );
   }
 
   useEffect(() => {
     if (id) {
       getTodo(id)
         .then((response) => {
-          console.log(response.data);
           setTitle(response.data.title);
           setDescription(response.data.description);
           setCompleted(response.data.completed);
         })
         .catch((error) => {
           console.log(error);
+          toast.error("Failed to load Todo details.");
         });
     }
   }, [id]);
 
   return (
     <div className="container">
+      <ToastContainer />
       <br />
       <br />
       <div className="row">

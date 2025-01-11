@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { registerAPICall } from "../services/AuthService";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterComponent = () => {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   function handleRegistrationForm(e) {
     e.preventDefault();
@@ -16,15 +20,18 @@ const RegisterComponent = () => {
 
     registerAPICall(register)
       .then((response) => {
-        console.log(response.data);
+        toast.success("Registration successful!");
+        setTimeout(() => navigate("/login"), 2000);
       })
       .catch((error) => {
+        toast.error("Registration failed. Please try again.");
         console.error(error);
       });
   }
 
   return (
     <div className="container">
+      <ToastContainer position="top-center" />
       <br /> <br />
       <div className="row">
         <div className="col-md-6 offset-md-3">
